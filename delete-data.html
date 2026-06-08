@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conch — Data Deletion</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;line-height:1.6;color:#1a1a1a}
+  h1{font-size:1.7rem} h2{font-size:1.15rem;margin-top:1.9em}
+  code{background:#f0f2f4;padding:1px 5px;border-radius:4px} a{color:#0a7d52}
+  .muted{color:#888;font-size:.9rem;margin-top:2.4em}
+</style>
+</head>
+<body>
+<h1>Data deletion — Conch</h1>
+<p><strong>App:</strong> Conch (Android, <code>ai.eight24family.conch</code>). &nbsp;<strong>Developer:</strong> Eight 24 Family LLC.</p>
+<p>Conch has no hosted backend and no user account. Almost all data stays on your own device or on the SSH servers you connect to. This page explains how to delete it.</p>
+
+<h2>1. Delete all data stored on your device</h2>
+<ol>
+  <li>Open <strong>Conch</strong>.</li>
+  <li>Go to <strong>Settings → Privacy</strong>.</li>
+  <li>Tap <strong>“Delete all my data”</strong> and confirm.</li>
+</ol>
+<p>This immediately and permanently wipes every local store: server records (host / port / user), saved SSH keys and passphrases, cached session histories, and all app preferences. The app then restarts with empty storage. Uninstalling Conch removes the same data.</p>
+
+<h2>2. Request deletion of crash &amp; diagnostic data</h2>
+<p>If optional crash / performance reporting is left enabled (Settings → Privacy → Crash reporting — it is opt-out), a small amount of diagnostic data may have been sent to our error-reporting provider, Sentry. It contains no chat content, no server hostnames or IPs, and no account identifiers.</p>
+<p>To request deletion, email <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a> with the subject <em>“Conch data deletion”</em>. We action such requests within 30 days.</p>
+
+<h2>What is deleted vs. retained</h2>
+<ul>
+  <li><strong>On-device data</strong> — deleted immediately and completely via the in-app button above (or on uninstall). Nothing is retained.</li>
+  <li><strong>Crash / diagnostic data (Sentry)</strong> — deleted on request; otherwise automatically purged after Sentry’s retention window of <strong>90 days</strong>.</li>
+  <li>Conch keeps nothing else about you on any server we operate — there is no such server.</li>
+</ul>
+
+<p class="muted">Full privacy policy: <a href="privacy.html">privacy.html</a></p>
+</body>
+</html>
