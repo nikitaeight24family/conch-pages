@@ -53,10 +53,17 @@
 
 <h2>What stays on your device only</h2>
 <ul>
-  <li>All SSH server records, hostnames, usernames.</li>
-  <li>All SSH keys (passwords, PEM private keys, FIDO key handles).</li>
+  <li>All SSH keys and passwords (PEM private keys, FIDO key handles). Never included in any backup or transfer — they are encrypted with a hardware-bound key that cannot leave the device, so a copy would be unreadable anywhere else.</li>
   <li>All chat messages.</li>
   <li>Locally-cached copies of your AI session JSONL files.</li>
+</ul>
+
+<h2>Moving to a new device (Android Backup)</h2>
+<p>Since 0.4.0, Conch supports Android's standard backup and device-to-device migration so a new phone doesn't start empty. This is controlled entirely by <strong>your</strong> Android system backup setting (Settings → Google → Backup) — if it's off, nothing is backed up.</p>
+<ul>
+  <li><strong>What transfers:</strong> your server list (hostnames, ports, usernames, key references), app settings, and your crash-reporting opt-out choice.</li>
+  <li><strong>What never transfers:</strong> passwords, private keys, FIDO credential handles, and chat history. Credentials must be re-added once on the new device.</li>
+  <li><strong>Cloud backups are end-to-end encrypted:</strong> the server list is only ever included in a Google cloud backup when the backup is client-side encrypted with your device's lock-screen secret (Android 9+). Direct device-to-device transfer never touches the cloud.</li>
 </ul>
 
 <h2>Data on your servers</h2>
