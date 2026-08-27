@@ -222,6 +222,7 @@ $ claude                               <b># log in once, in its own terminal</b>
       <li>No accounts. <span>Nothing to sign up for. Conch has no user database.</span></li>
       <li>No quotas or subscriptions to us. <span>You already pay Anthropic / OpenAI / Google. We don't resell that.</span></li>
       <li>No credentials leaving your device. <span>SSH passwords, private keys and FIDO handles are encrypted with the Android keystore (AES-256, hardware-backed where the device supports it).</span></li>
+      <li>No analytics, no crash reporting, no telemetry. <span>Not opt-out — absent. Conch opens no network connection to anything except the servers you add yourself.</span></li>
       <li>No ads, ever. <span>And no in-app purchases.</span></li>
     </ul>
   </div>
@@ -250,13 +251,14 @@ $ claude                               <b># log in once, in its own terminal</b>
         files and diffs that a raw shell would make miserable to read on a 6-inch screen.</p></details>
 
     <details><summary>What data does Conch collect?</summary>
-      <p>Chat content, credentials and file contents: none. They stay between your phone and
-        your server.</p>
-      <p>Crash and performance reports go to Sentry and are opt-out in
-        <b>Settings → Privacy &amp; data</b>. Sentry resolves a country and city from the
-        request IP at ingestion and then drops the IP — that is why the Play listing's data
-        safety section says "approximate location". Conch does not declare or hold any
-        location permission and cannot read your GPS. Full detail is in the
+      <p>None. Not "anonymised", not "opt-out" — there is no analytics, no crash reporting
+        and no telemetry in the app, and no backend of ours for any of it to reach. The only
+        network connections Conch opens are the SSH connections to servers you add yourself.</p>
+      <p>Up to 0.4.0 there was opt-out crash reporting through Sentry, which is why older
+        store listings declared "approximate location" — Sentry derived a country from the
+        request IP. It was removed outright in 0.4.1: SDK, Gradle plugin, init code and
+        setting. The honest cost is that a crash on your device is now invisible to us, so
+        bug reports by email are the only channel. Full detail in the
         <a href="privacy.html">privacy policy</a>.</p></details>
 
     <details><summary>Is it free? What's the catch?</summary>

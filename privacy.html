@@ -25,7 +25,7 @@
 <body>
 
 <h1>Privacy Policy — Conch</h1>
-<p><small>Last updated: 2026-05-11 · App: Conch (Android, <code>ai.eight24family.conch</code>), version 1.0.x · Distributor / maintainer: Eight 24 Family LLC · <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a></small></p>
+<p><small>Last updated: 2026-08-27 · App: Conch (Android, <code>ai.eight24family.conch</code>), version 0.4.x · Distributor / maintainer: Eight 24 Family LLC · <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a></small></p>
 
 <p>Conch is an Android client that lets you SSH into <strong>your own</strong> servers and drive the Claude Code, Codex, or Gemini CLI tools that live there. Everything in this policy stems from one design rule: we don't want copies of your data and we never run intermediary servers between your phone and your hosts.</p>
 
@@ -38,18 +38,14 @@
   <li><strong>No location, contacts, calendar, microphone, or camera.</strong></li>
 </ul>
 
-<h2>What we DO collect (opt-out available)</h2>
-<p>For stability we send anonymous technical data to <strong>Sentry</strong>. Toggle off any time via <strong>Settings → Privacy → Crash reporting</strong>.</p>
-<table>
-  <thead><tr><th>Category</th><th>Data</th><th>Why</th></tr></thead>
-  <tbody>
-    <tr><td>Crash logs</td><td>Stack traces, app version, Android OS, device model</td><td>Find and fix bugs</td></tr>
-    <tr><td>Performance traces (20% sampled)</td><td>Numeric durations of SSH handshake, agent bootstrap, chat first paint</td><td>Find and fix slowness</td></tr>
-    <tr><td>Anonymous app interactions</td><td>Which AI CLI you opened (claude/codex/gemini), attachment kind (file/photo/diff/init-prompt), whether you created/edited/deleted a subagent, whether your approval mode changed and to what, SSH failure category</td><td>Prioritise feature work</td></tr>
-  </tbody>
-</table>
-<p>Identifiers are stripped before sending: Sentry's installation UUID is dropped in <code>beforeSend</code> (see <code>the app.initSentryIfEnabled</code>); IPs are scrubbed at Sentry's project-level PII config. Sentry stores this data for 90 days.</p>
-<p><strong>Country / city geo derived from IP.</strong> Sentry resolves an approximate geographic region (country and city level — not GPS) from the source IP at ingestion time and stores that, then drops the IP itself. This is the only piece of geolocation Sentry holds. It cannot be turned off independently of crash reporting — opt out of crash reporting if you don't want it.</p>
+<h2>What we DO collect</h2>
+<p><strong>Nothing.</strong> There is no analytics, no crash reporting and no telemetry in Conch, and no backend of ours for any of it to reach. The only network connections the app opens are the SSH connections to the servers you add yourself.</p>
+<p>Versions up to and including 0.4.0 sent crash reports and a small set of feature-usage events to Sentry, with an opt-out toggle in Settings. <strong>0.4.1 removed that entirely</strong> — the SDK, the Gradle plugin, the initialisation code and the toggle are all gone from the source. Nothing replaced it.</p>
+<p>Two consequences worth stating plainly:</p>
+<ul>
+  <li><strong>No approximate location.</strong> Earlier versions had to declare it, because Sentry derived a country and city from the request IP at ingestion. With Sentry gone there is no request, no IP and no geolocation of any kind. Conch holds no location permission and cannot read your GPS.</li>
+  <li><strong>When Conch crashes on your device, we do not find out.</strong> That is the trade. If something breaks, please write to the address at the bottom of this page — it is now the only channel there is.</li>
+</ul>
 
 <h2>What stays on your device only</h2>
 <ul>
@@ -61,7 +57,7 @@
 <h2>Moving to a new device (Android Backup)</h2>
 <p>Since 0.4.0, Conch supports Android's standard backup and device-to-device migration so a new phone doesn't start empty. This is controlled entirely by <strong>your</strong> Android system backup setting (Settings → Google → Backup) — if it's off, nothing is backed up.</p>
 <ul>
-  <li><strong>What transfers:</strong> your server list (hostnames, ports, usernames, key references), app settings, and your crash-reporting opt-out choice.</li>
+  <li><strong>What transfers:</strong> your server list (hostnames, ports, usernames, key references) and app settings.</li>
   <li><strong>What never transfers:</strong> passwords, private keys, FIDO credential handles, and chat history. Credentials must be re-added once on the new device.</li>
   <li><strong>Cloud backups are end-to-end encrypted:</strong> the server list is only ever included in a Google cloud backup when the backup is client-side encrypted with your device's lock-screen secret (Android 9+). Direct device-to-device transfer never touches the cloud.</li>
 </ul>
@@ -71,17 +67,16 @@
 
 <h2>Third-party services</h2>
 <ul>
-  <li><a href="https://sentry.io/privacy/">Sentry</a> — crash and performance reporting. The in-app toggle stops all SDK calls.</li>
   <li>Anthropic / OpenAI / Google — only via the CLI tool you choose to run on <strong>your</strong> server, with <strong>your</strong> credentials. We are not a party to that traffic.</li>
 </ul>
-<p>We do <strong>not</strong> use Google Analytics, Firebase Analytics, Crashlytics, AppsFlyer, Adjust, Branch, or any advertising/attribution SDK.</p>
+<p>That is the whole list. We do <strong>not</strong> use Sentry, Google Analytics, Firebase Analytics, Crashlytics, AppsFlyer, Adjust, Branch, or any analytics, crash-reporting, advertising or attribution SDK.</p>
 
 <h2>Hardware security keys (FIDO / CTAP2)</h2>
 <p>If you import a hardware security key for SSH authentication, the app uses Android NFC and USB-host APIs to talk to the key over CTAP2. The credential handle is stored encrypted on the device. <strong>We do not collect biometric data.</strong> A "touch" is the physical-presence check the FIDO standard requires — a cryptographic signature, not an image or fingerprint template.</p>
 
 <h2>Permissions the app requests</h2>
 <ul>
-  <li><strong>Internet</strong> — to reach the SSH servers you add and (if crash reporting is on) Sentry.</li>
+  <li><strong>Internet</strong> — to reach the SSH servers you add. Nothing else.</li>
   <li><strong>Foreground service + persistent notification</strong> — to keep agent sessions alive while the screen is locked or the app is backgrounded.</li>
   <li><strong>Notifications</strong> — to show approval prompts and connection status.</li>
   <li><strong>NFC / USB host</strong> — only when you tap to use a hardware security key.</li>
@@ -93,13 +88,13 @@
 
 <h2>Your rights / data deletion</h2>
 <ul>
-  <li><strong>Right to opt out (crash reporting + geo derivation):</strong> <strong>Settings → Privacy → Crash reporting</strong> off. Takes effect on the next app launch.</li>
-  <li><strong>Right to erasure (GDPR Art. 17):</strong> <strong>Settings → Privacy → Delete all my data</strong>. Removes the encrypted server registry, all stored keys (including hardware-key credential handles), all session caches, the on-device upload cache, all preferences, and the Android Keystore master key, then terminates the app process. To remove anonymous telemetry already received by Sentry (within their 90-day retention window), email <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a>.</li>
-  <li><strong>Right of access (GDPR Art. 15):</strong> email below. With the PII strippings in place, we typically have nothing user-identifying to return.</li>
+  <li><strong>Nothing to opt out of.</strong> There is no collection to disable, so there is no toggle.</li>
+  <li><strong>Right to erasure (GDPR Art. 17):</strong> <strong>Settings → Privacy → Delete all my data</strong>. Removes the encrypted server registry, all stored keys (including hardware-key credential handles), all session caches, the on-device upload cache, all preferences, and the Android Keystore master key, then terminates the app process. Because nothing ever leaves the device, there is no copy anywhere else for us to delete.</li>
+  <li><strong>Right of access (GDPR Art. 15):</strong> email below. We hold no data about you at all, so there is nothing to return.</li>
 </ul>
 
 <h2>International transfers</h2>
-<p>Sentry processes data in the EU and the US. By keeping the crash-reporting toggle on, you consent to this transfer.</p>
+<p>None. No data about you crosses any border, because none of it leaves your phone.</p>
 
 <h2>Changes to this policy</h2>
 <p>If we change what the app collects, we'll update this page and bump the <em>Last updated</em> date. Material changes will also be surfaced in-app on first launch after update.</p>

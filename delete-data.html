@@ -24,15 +24,14 @@
 </ol>
 <p>This immediately and permanently wipes every local store: server records (host / port / user), saved SSH keys and passphrases, cached session histories, and all app preferences. The app then restarts with empty storage. Uninstalling Conch removes the same data.</p>
 
-<h2>2. Request deletion of crash &amp; diagnostic data</h2>
-<p>If optional crash / performance reporting is left enabled (Settings → Privacy → Crash reporting — it is opt-out), a small amount of diagnostic data may have been sent to our error-reporting provider, Sentry. It contains no chat content, no server hostnames or IPs, and no account identifiers.</p>
-<p>To request deletion, email <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a> with the subject <em>“Conch data deletion”</em>. We action such requests within 30 days.</p>
+<h2>2. There is no second step</h2>
+<p>Since <strong>0.4.1</strong> Conch collects nothing: no analytics, no crash reporting, no telemetry. Nothing about you exists off your device, so the button above is the whole procedure — there is no server-side copy to write in and ask us to delete.</p>
+<p>Earlier versions sent opt-out crash and performance reports to Sentry. That was removed entirely in 0.4.1, and anything sent by an older build ages out of Sentry’s 90-day retention on its own. To have it removed sooner, email <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a> with the subject <em>“Conch data deletion”</em>; we action such requests within 30 days.</p>
 
 <h2>What is deleted vs. retained</h2>
 <ul>
   <li><strong>On-device data</strong> — deleted immediately and completely via the in-app button above (or on uninstall). Nothing is retained.</li>
-  <li><strong>Crash / diagnostic data (Sentry)</strong> — deleted on request; otherwise automatically purged after Sentry’s retention window of <strong>90 days</strong>.</li>
-  <li>Conch keeps nothing else about you on any server we operate — there is no such server.</li>
+  <li><strong>Everything else</strong> — there is nothing else. Conch keeps no data about you on any server we operate, because we operate none.</li>
 </ul>
 
 <p class="muted">Full privacy policy: <a href="privacy.html">privacy.html</a></p>
