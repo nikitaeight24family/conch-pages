@@ -82,6 +82,24 @@
   .nope li::before{content:"✕";position:absolute;left:6px;color:var(--accent)}
   .nope span{color:var(--dim)}
 
+  /* business */
+  #business{background:var(--panel);border-top:1px solid var(--line);scroll-margin-top:24px}
+  .entity{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);
+          margin:0 0 14px}
+  .entity b{color:var(--text);font-weight:500;letter-spacing:.06em}
+  .licence{border-left:2px solid var(--accent);padding:2px 0 2px 18px;margin:0 0 30px;
+           max-width:66ch}
+  .licence p{margin:0 0 .8em;font-size:.92rem;color:var(--plain)}
+  .licence p:last-child{margin-bottom:0;color:var(--dim);font-size:.86rem}
+  .covers{list-style:none;padding:0;margin:0 0 32px;display:grid;gap:11px}
+  .covers li{padding-left:28px;position:relative;font-size:.88rem;color:var(--dim)}
+  .covers li::before{content:"—";position:absolute;left:4px;color:var(--accent)}
+  .covers b{color:var(--plain);font-weight:500}
+  .bizcta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+          border:1px solid var(--line);border-radius:10px;padding:20px 22px;background:var(--bg)}
+  .bizcta .mail{font-size:1.02rem;color:var(--accent);font-weight:500}
+  .bizcta .note{font-size:.8rem;color:var(--dim);flex:1;min-width:min(100%,260px)}
+
   details{border:1px solid var(--line);border-radius:10px;background:var(--panel);
           padding:15px 20px;margin-bottom:11px}
   details[open]{border-color:#2a2a3a}
@@ -114,9 +132,11 @@
         <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" />
       </a>
       <a class="ghost" href="https://github.com/nikitaeight24family/Conch">Source &amp; APK on GitHub</a>
+      <a class="ghost" href="#business">For companies</a>
     </div>
-    <p class="meta">Free · no ads · no accounts · no in-app purchases —
-      you bring <b>your own server</b> and <b>your own agent subscription</b>.</p>
+    <p class="meta">No ads · no accounts · no in-app purchases · free for personal and
+      noncommercial use — you bring <b>a server you can SSH into</b> and
+      <b>your own agent account</b>. Conch installs the rest itself.</p>
   </div>
 </header>
 
@@ -143,12 +163,18 @@
           where you'd expect.</p>
       </div>
     </div>
-    <p class="lede" style="margin:26px 0 12px">What you need before installing:</p>
-<pre># on a box you can already SSH into
-$ npm i -g @anthropic-ai/claude-code   <b># or codex, or gemini</b>
-$ claude                               <b># log in once, in its own terminal</b>
+    <p class="lede" style="margin:26px 0 12px">What you need to start: <b>a server you can
+      SSH into.</b> That is the whole list — Conch sets the rest up itself.</p>
+<pre><b>1.</b>  add the host           ip / user, and a password, key file or hardware key
+<b>2.</b>  tap the agent          Conch installs Node and the CLI on the server for you
+<b>3.</b>  sign in                the provider's login opens on your phone; the server
+                          ends up logged in, its own terminal included
 
-# then open Conch, add the host, and pick the agent.</pre>
+    then just type.</pre>
+    <p class="lede" style="margin:16px 0 0;font-size:.86rem">On a bare VPS step 2 needs
+      root or sudo, since it is installing packages. If Node is already there it simply
+      installs the CLI. You bring an Anthropic, OpenAI or Google account — that part is
+      yours and stays yours.</p>
   </div>
 </section>
 
@@ -228,15 +254,93 @@ $ claude                               <b># log in once, in its own terminal</b>
   </div>
 </section>
 
+<section id="business">
+  <div class="wrap">
+    <p class="entity">Commercial licensing · <b>Eight 24 Family LLC</b></p>
+    <h2>for companies</h2>
+    <p class="lede">Conch is published under the
+      <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/">PolyForm
+      Noncommercial 1.0.0</a> licence. Personal, hobby, research, education, charitable and
+      government use is free and always will be.</p>
+
+    <div class="licence">
+      <p>Using Conch as part of a company's commercial engineering work falls outside that
+        licence. If your developers are driving your build servers with it during paid work,
+        the licence that covers you is a commercial one, and it is issued by
+        <b>Eight&nbsp;24&nbsp;Family&nbsp;LLC</b>.</p>
+      <p>Nobody is going to be chased over this. It exists so that a company can put the
+        tool in front of its legal team and get a clean answer instead of a shrug.</p>
+    </div>
+
+    <h3 style="font-family:inherit;font-size:1rem;color:var(--text);margin:0 0 14px;font-weight:700">
+      What a security review will find</h3>
+    <div class="grid" style="margin-bottom:34px">
+      <div class="card"><h3>No vendor in the data path</h3>
+        <p>There is no Conch backend, no account system and no relay. Prompts, output, keys
+          and files move between the handset and your own hosts over SSH. Nothing to
+          allow-list, nothing to firewall, no third-party endpoint to justify.</p></div>
+      <div class="card"><h3>No processor relationship to paper over</h3>
+        <p>The app collects nothing — no analytics, no crash reporting, no telemetry, since
+          0.4.1 not even opt-out. We never receive your data, so there is no DPA to
+          negotiate, no subprocessor list, and no data-residency question to answer.</p></div>
+      <div class="card"><h3>Source-available, so nothing is taken on trust</h3>
+        <p>A public source mirror carries every release, and each release ships a signed APK
+          built from it. Your engineers can read what runs on their phones rather than
+          believe a datasheet, and diff it release over release.</p></div>
+      <div class="card"><h3>It fits controls you already run</h3>
+        <p>It connects to your bastion or dev hosts the way any SSH client does, and
+          authenticates with a password, a key file, or a <b>FIDO2 hardware key</b> over NFC
+          or USB — so a hardware-key mandate is satisfied rather than worked around. No new
+          identity provider to onboard.</p></div>
+      <div class="card"><h3>Your agent spend stays yours</h3>
+        <p>Conch drives the Claude Code, Codex or Gemini CLI on your servers — installing it
+          there if it is missing — under your own accounts and quotas. We do not resell,
+          meter or proxy model usage, and never see a prompt.</p></div>
+      <div class="card"><h3>Nothing is retained if you walk away</h3>
+        <p>Uninstalling, or the in-app <b>delete all data</b> control, removes every local
+          store. Because nothing was ever sent anywhere, there is no export to request and
+          no copy left behind on our side.</p></div>
+    </div>
+
+    <h3 style="font-family:inherit;font-size:1rem;color:var(--text);margin:0 0 14px;font-weight:700">
+      What we can talk about</h3>
+    <ul class="covers">
+      <li><b>A commercial licence</b> covering internal business use, per-seat or
+        organisation-wide, invoiced by the LLC.</li>
+      <li><b>Your paperwork, not ours.</b> Security questionnaires, vendor-onboarding forms
+        and procurement review — send them over; the honest answer to most of the data
+        questions is "not collected".</li>
+      <li><b>Distribution that suits you</b> — Google Play, or the signed APK for your own
+        managed-device channel.</li>
+      <li><b>A named contact for issues</b>, and a say in what gets built next. The app
+        collects nothing, which means what you tell us is genuinely the only signal we have.</li>
+      <li><b>Redistribution, white-labelling or embedding</b> Conch in something you ship —
+        a different conversation from internal use, and also one to have.</li>
+    </ul>
+
+    <div class="bizcta">
+      <a class="mail" href="mailto:contact@eight24family.ai?subject=Conch%20—%20commercial%20licence">contact@eight24family.ai</a>
+      <span class="note">Eight 24 Family LLC. Tell us roughly how many developers and what
+        they would be pointing it at, and we will come back with terms. The
+        <a href="terms.html">terms of service</a> and
+        <a href="privacy.html">privacy policy</a> are published in full if your legal team
+        wants to start there.</span>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
     <h2>questions you're about to ask</h2>
 
     <details><summary>Do I need my own server?</summary>
-      <p>Yes, and that is the whole design. Conch is a client, not a service. You need a
-        machine you can SSH into — a VPS, a home box, a work dev server — with Claude Code,
-        Codex CLI or Gemini CLI installed and already logged in. If you install Conch before
-        that, the first screen will simply have nothing to connect to.</p></details>
+      <p>Yes, and that is the whole design — Conch is a client, not a service. You need a
+        machine you can SSH into: a VPS, a home box, a work dev server.</p>
+      <p>You do <em>not</em> need to prepare it. Conch installs Node and the agent CLI on
+        the server itself, and runs the provider sign-in from your phone so the server ends
+        up authenticated — its own terminal included. A bare VPS needs root or sudo for that
+        first install, because packages are being installed. What you bring is the machine
+        and an Anthropic, OpenAI or Google account.</p></details>
 
     <details><summary>How is this different from driving Claude Code remotely from Anthropic?</summary>
       <p>Anthropic's own remote control is Claude-only, relays through their cloud, and the
@@ -262,15 +366,22 @@ $ claude                               <b># log in once, in its own terminal</b>
         <a href="privacy.html">privacy policy</a>.</p></details>
 
     <details><summary>Is it free? What's the catch?</summary>
-      <p>Free, no ads, no IAP. It was built by one developer as a personal tool and is
-        published because it may as well be useful to someone else. That is the entire
-        business model.</p></details>
+      <p>For you, almost certainly yes: personal, hobby, research, education, charitable and
+        government use is free under the PolyForm Noncommercial licence, with no ads and no
+        in-app purchases. It started as one developer's own tool and is published because it
+        may as well be useful to someone else.</p>
+      <p>The one exception is a company using it for commercial work, which is what a
+        <a href="#business">commercial licence</a> covers. That is the business model, such
+        as it is — and it is why the free version has no ads to sell and no data to
+        collect.</p></details>
 
     <details><summary>Is the source available?</summary>
       <p>Yes — a source mirror lives at
         <a href="https://github.com/nikitaeight24family/Conch">github.com/nikitaeight24family/Conch</a>,
-        under the PolyForm Noncommercial licence, along with signed APKs for every release if
-        you'd rather sideload than install from Play.</p></details>
+        under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0/">PolyForm
+        Noncommercial 1.0.0</a>, along with signed APKs for every release if you'd rather
+        sideload than install from Play. Source-available, not OSI open source — the
+        difference is exactly the <a href="#business">commercial clause</a>.</p></details>
 
     <details><summary>Which Android versions?</summary>
       <p>Android 8.0 and up. Hardware security keys need a device with USB-OTG or NFC.</p></details>
@@ -282,12 +393,18 @@ $ claude                               <b># log in once, in its own terminal</b>
     <div class="flinks">
       <a href="https://play.google.com/store/apps/details?id=ai.eight24family.conch">Google Play</a>
       <a href="https://github.com/nikitaeight24family/Conch">GitHub</a>
+      <a href="#business">Commercial licensing</a>
       <a href="privacy.html">Privacy policy</a>
+      <a href="terms.html">Terms of service</a>
       <a href="delete-data.html">Delete your data</a>
-      <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a>
     </div>
-    <p style="margin:0">Conch — <code>ai.eight24family.conch</code>. Built by one developer,
-      for a phone and a server that were already there.</p>
+    <p style="margin:0 0 .7em">Support and bug reports:
+      <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a> · Licensing,
+      procurement and security review:
+      <a href="mailto:contact@eight24family.ai">contact@eight24family.ai</a></p>
+    <p style="margin:0">Conch — <code>ai.eight24family.conch</code>. Published by
+      <b style="color:var(--plain);font-weight:400">Eight 24 Family LLC</b> under
+      PolyForm Noncommercial 1.0.0.</p>
   </div>
 </footer>
 
