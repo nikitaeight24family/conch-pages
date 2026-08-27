@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Conch — AI coding agents over SSH, from your phone</title>
+<meta name="description" content="Conch is a native Android client that drives Claude Code, OpenAI Codex and Gemini CLI on your own SSH servers. No hosted backend, no quotas, no proxy — your phone talks straight to your machine." />
+<link rel="icon" href="img/icon.png" />
+<link rel="canonical" href="https://nikitaeight24family.github.io/conch-pages/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Conch — AI coding agents over SSH, from your phone" />
+<meta property="og:description" content="Drive Claude Code, Codex and Gemini CLI on your own servers, from your phone. No hosted backend." />
+<meta property="og:image" content="https://nikitaeight24family.github.io/conch-pages/img/conch_01.jpg" />
+<meta property="og:url" content="https://nikitaeight24family.github.io/conch-pages/" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#000; --panel:#0b0b0f; --line:#1c1c26;
+    --accent:#a78bfa; --text:#f39c6b; --plain:#d8d5d0; --dim:#7b7b8a;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--plain);font-family:var(--mono);
+       font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:0 22px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+  a:hover{border-bottom-color:var(--accent)}
+  h1,h2,h3{line-height:1.25;font-weight:700}
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+  h2{font-size:1.35rem;color:var(--accent);margin:0 0 8px}
+  h2::before{content:"// ";color:var(--dim)}
+  .lede{color:var(--dim);margin:0 0 30px;max-width:64ch}
+
+  /* hero */
+  header{padding:76px 0 60px;text-align:center}
+  .mark{font-size:clamp(2.6rem,9vw,4.2rem);font-weight:700;color:var(--accent);
+        margin:0;letter-spacing:-.02em}
+  .caret{display:inline-block;width:.42em;height:.95em;background:var(--accent);
+         vertical-align:-.08em;margin-left:.16em;animation:blink 1.15s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+  .tag{font-size:clamp(1rem,3.4vw,1.3rem);color:var(--text);margin:16px auto 0;max-width:30ch}
+  .sub{color:var(--dim);margin:18px auto 0;max-width:60ch}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px;align-items:center}
+  .play img{height:58px;display:block}
+  .ghost{border:1px solid var(--line);padding:0 20px;height:58px;display:flex;align-items:center;
+         border-radius:8px;color:var(--plain);font-size:.9rem}
+  .ghost:hover{border-color:var(--accent);color:var(--accent);border-bottom-color:var(--accent)}
+  .meta{margin-top:26px;color:var(--dim);font-size:.8rem}
+  .meta b{color:var(--text);font-weight:500}
+
+  /* pipeline */
+  .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch;
+        margin-top:8px}
+  .node{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+  .node h3{margin:0 0 6px;font-size:.92rem;color:var(--text)}
+  .node p{margin:0;font-size:.82rem;color:var(--dim);line-height:1.55}
+  .arrow{align-self:center;color:var(--accent);font-size:1.1rem}
+  @media(max-width:760px){
+    .flow{grid-template-columns:1fr}
+    .arrow{transform:rotate(90deg);justify-self:center}
+  }
+
+  /* shots */
+  .shots{display:flex;gap:14px;overflow-x:auto;padding:6px 0 16px;scroll-snap-type:x mandatory}
+  .shot{flex:0 0 auto;width:222px;scroll-snap-align:start}
+  .shot img{width:100%;border:1px solid var(--line);border-radius:12px;display:block}
+  .shot figcaption{color:var(--dim);font-size:.76rem;margin-top:9px;line-height:1.5}
+
+  /* grids */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .card h3{margin:0 0 7px;font-size:.9rem;color:var(--text)}
+  .card p{margin:0;font-size:.84rem;color:var(--dim);line-height:1.6}
+
+  .nope{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+  .nope li{padding-left:30px;position:relative;font-size:.9rem;color:var(--plain)}
+  .nope li::before{content:"✕";position:absolute;left:6px;color:var(--accent)}
+  .nope span{color:var(--dim)}
+
+  details{border:1px solid var(--line);border-radius:10px;background:var(--panel);
+          padding:15px 20px;margin-bottom:11px}
+  details[open]{border-color:#2a2a3a}
+  summary{cursor:pointer;font-size:.9rem;color:var(--text);list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"▸ ";color:var(--accent)}
+  details[open] summary::before{content:"▾ "}
+  details p{margin:12px 0 2px;font-size:.85rem;color:var(--dim);line-height:1.68}
+  details p:last-child{margin-bottom:0}
+
+  pre{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+      padding:16px 20px;overflow-x:auto;font-size:.82rem;color:var(--dim);margin:0}
+  pre b{color:var(--text);font-weight:400}
+
+  footer{border-top:1px solid var(--line);padding:34px 0 56px;color:var(--dim);font-size:.8rem}
+  .flinks{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1 class="mark">conch<span class="caret"></span></h1>
+    <p class="tag">Your phone, your server, your AI.</p>
+    <p class="sub">A native Android client that drives <b>Claude Code</b>, <b>OpenAI Codex</b>
+      and <b>Gemini CLI</b> on the servers you already own. Nothing is hosted by us — your
+      phone talks straight to your machine over SSH.</p>
+    <div class="cta">
+      <a class="play" href="https://play.google.com/store/apps/details?id=ai.eight24family.conch">
+        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" />
+      </a>
+      <a class="ghost" href="https://github.com/nikitaeight24family/Conch">Source &amp; APK on GitHub</a>
+    </div>
+    <p class="meta">Free · no ads · no accounts · no in-app purchases —
+      you bring <b>your own server</b> and <b>your own agent subscription</b>.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>how it works</h2>
+    <p class="lede">There is no backend in the middle. Conch is a client for machines you
+      already have, running agents you already pay for.</p>
+    <div class="flow">
+      <div class="node">
+        <h3>your phone</h3>
+        <p>Conch. Chats, files, prompts, approvals — the tactile end of the loop.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="node">
+        <h3>plain SSH</h3>
+        <p>One authenticated transport per host, multiplexed across every chat. Password,
+          key file, or a FIDO2 hardware key.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="node">
+        <h3>your server</h3>
+        <p>The real CLI process, in your real filesystem. Builds run, tests run, files land
+          where you'd expect.</p>
+      </div>
+    </div>
+    <p class="lede" style="margin:26px 0 12px">What you need before installing:</p>
+<pre># on a box you can already SSH into
+$ npm i -g @anthropic-ai/claude-code   <b># or codex, or gemini</b>
+$ claude                               <b># log in once, in its own terminal</b>
+
+# then open Conch, add the host, and pick the agent.</pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>what it looks like</h2>
+    <p class="lede">Every chat is a live CLI process on your machine. Close the app, come back
+      tomorrow, resume it.</p>
+    <div class="shots">
+      <figure class="shot">
+        <img src="img/conch_01.jpg" alt="Session list across servers and agents" loading="lazy" />
+        <figcaption>Every session from every server and agent, newest first — like a messenger.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/conch_02.jpg" alt="Agent status per server" loading="lazy" />
+        <figcaption>Conch probes each host: which agents are installed, which version, whether they're signed in.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/conch_03.jpg" alt="A chat with tool calls and a written file" loading="lazy" />
+        <figcaption>Tool calls, exit codes and diffs render inline. Tap a file the agent wrote to pull it down.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/conch_04.jpg" alt="Attaching a photo to a chat" loading="lazy" />
+        <figcaption>Attach a photo or a file from the phone; it streams over the same SSH channel.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/conch_09.jpg" alt="Appearance settings" loading="lazy" />
+        <figcaption>Your accent, your background, your coding typeface, your scale.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>what it does</h2>
+    <div class="grid">
+      <div class="card"><h3>Three agents, one app</h3>
+        <p>Claude Code, Codex CLI and Gemini CLI, each driven through its own real flags —
+          resume ids, approval modes and model pickers are per-agent, not a lowest common denominator.</p></div>
+      <div class="card"><h3>Sessions that survive</h3>
+        <p>Chats are the CLI's own session files on your disk. Resume days later, from a
+          different network, on a different phone.</p></div>
+      <div class="card"><h3>Full-text search</h3>
+        <p>Search across every session on every server by what was said, and jump to the message.</p></div>
+      <div class="card"><h3>Hardware-key auth</h3>
+        <p>FIDO2 / CTAP2 over USB-HID or NFC. Enrol as many keys per server as you like;
+          one tap connects, and the same auth carries the whole session.</p></div>
+      <div class="card"><h3>SAFE / AUTO / YOLO</h3>
+        <p>One switch that maps onto each agent's own sandbox and permission flags, so you
+          decide how much rope the model gets.</p></div>
+      <div class="card"><h3>Memory editor</h3>
+        <p>Edit CLAUDE.md / AGENTS.md / GEMINI.md — global and per-project — straight on the server.</p></div>
+      <div class="card"><h3>Claude extras</h3>
+        <p>Subagent browser and editor, plus your own <code>~/.claude/commands/*.md</code>
+          slash commands in autocomplete.</p></div>
+      <div class="card"><h3>Built for one hand</h3>
+        <p>Markdown rendering, copyable code blocks, mid-turn prompt queueing, a real Stop,
+          and reconnect-on-network-change that doesn't need a tap.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>what it does not do</h2>
+    <p class="lede">The economics only work one way round: we are not in the path, so there is
+      nothing for us to meter, store or sell.</p>
+    <ul class="nope">
+      <li>No proxy. <span>Your prompts go phone → your SSH server. They never touch our infrastructure, because there isn't any.</span></li>
+      <li>No accounts. <span>Nothing to sign up for. Conch has no user database.</span></li>
+      <li>No quotas or subscriptions to us. <span>You already pay Anthropic / OpenAI / Google. We don't resell that.</span></li>
+      <li>No credentials leaving your device. <span>SSH passwords, private keys and FIDO handles are encrypted with the Android keystore (AES-256, hardware-backed where the device supports it).</span></li>
+      <li>No ads, ever. <span>And no in-app purchases.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>questions you're about to ask</h2>
+
+    <details><summary>Do I need my own server?</summary>
+      <p>Yes, and that is the whole design. Conch is a client, not a service. You need a
+        machine you can SSH into — a VPS, a home box, a work dev server — with Claude Code,
+        Codex CLI or Gemini CLI installed and already logged in. If you install Conch before
+        that, the first screen will simply have nothing to connect to.</p></details>
+
+    <details><summary>How is this different from driving Claude Code remotely from Anthropic?</summary>
+      <p>Anthropic's own remote control is Claude-only, relays through their cloud, and the
+        session lives on a machine of yours that has to stay awake with a terminal open.
+        Conch drives three different CLIs, runs on an always-on server of your choosing with
+        your laptop shut, and works with whatever account or API key that server already has —
+        including hardware-key SSH auth. Different shape, and both can be true at once.</p></details>
+
+    <details><summary>Is it a terminal emulator?</summary>
+      <p>No. Termux owns that and does it well. Conch does not run code on the phone; it
+        gives an agent on a real machine a good mobile surface — and gives you the approvals,
+        files and diffs that a raw shell would make miserable to read on a 6-inch screen.</p></details>
+
+    <details><summary>What data does Conch collect?</summary>
+      <p>Chat content, credentials and file contents: none. They stay between your phone and
+        your server.</p>
+      <p>Crash and performance reports go to Sentry and are opt-out in
+        <b>Settings → Privacy &amp; data</b>. Sentry resolves a country and city from the
+        request IP at ingestion and then drops the IP — that is why the Play listing's data
+        safety section says "approximate location". Conch does not declare or hold any
+        location permission and cannot read your GPS. Full detail is in the
+        <a href="privacy.html">privacy policy</a>.</p></details>
+
+    <details><summary>Is it free? What's the catch?</summary>
+      <p>Free, no ads, no IAP. It was built by one developer as a personal tool and is
+        published because it may as well be useful to someone else. That is the entire
+        business model.</p></details>
+
+    <details><summary>Is the source available?</summary>
+      <p>Yes — a source mirror lives at
+        <a href="https://github.com/nikitaeight24family/Conch">github.com/nikitaeight24family/Conch</a>,
+        under the PolyForm Noncommercial licence, along with signed APKs for every release if
+        you'd rather sideload than install from Play.</p></details>
+
+    <details><summary>Which Android versions?</summary>
+      <p>Android 8.0 and up. Hardware security keys need a device with USB-OTG or NFC.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="flinks">
+      <a href="https://play.google.com/store/apps/details?id=ai.eight24family.conch">Google Play</a>
+      <a href="https://github.com/nikitaeight24family/Conch">GitHub</a>
+      <a href="privacy.html">Privacy policy</a>
+      <a href="delete-data.html">Delete your data</a>
+      <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a>
+    </div>
+    <p style="margin:0">Conch — <code>ai.eight24family.conch</code>. Built by one developer,
+      for a phone and a server that were already there.</p>
+  </div>
+</footer>
+
+</body>
+</html>
