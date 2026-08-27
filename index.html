@@ -128,6 +128,23 @@
       padding:16px 20px;overflow-x:auto;font-size:.82rem;color:var(--dim);margin:0}
   pre b{color:var(--text);font-weight:400}
 
+  /* pricing — fetched on first open, so it is not in the served HTML */
+  #pricing{margin:0 0 26px}
+  .pload{color:var(--dim);font-size:.85rem;margin:12px 0 0}
+  .ptiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0 22px}
+  .ptier{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .ptier h4{margin:0 0 12px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+            color:var(--accent);font-weight:500}
+  .ptier .amt{font-size:1.6rem;color:var(--text);line-height:1.1;font-weight:700}
+  .ptier .unit{font-size:.8rem;color:var(--plain);margin-top:4px}
+  .ptier .terms{font-size:.74rem;color:var(--dim);margin-top:8px}
+  .ptier .for{font-size:.82rem;color:var(--dim);margin-top:14px;line-height:1.6}
+  .plist{list-style:none;padding:0;margin:0 0 20px;display:grid;gap:9px}
+  .plist li{padding-left:26px;position:relative;font-size:.85rem;color:var(--dim);line-height:1.6}
+  .plist.yes li::before{content:"+";position:absolute;left:6px;color:var(--accent)}
+  .plist.no li::before{content:"✕";position:absolute;left:5px;color:var(--dim)}
+  .pclose{font-size:.8rem;color:var(--dim);margin:0}
+
   footer{border-top:1px solid var(--line);padding:34px 0 56px;color:var(--dim);font-size:.8rem}
   .flinks{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px}
 </style>
@@ -332,6 +349,11 @@
         a different conversation from internal use, and also one to have.</li>
     </ul>
 
+    <details id="pricing">
+      <summary>What it costs</summary>
+      <div id="pricebody"><p class="pload">…</p></div>
+    </details>
+
     <div class="bizcta">
       <a class="mail" href="mailto:contact@eight24family.ai?subject=Conch%20—%20commercial%20licence">contact@eight24family.ai</a>
       <span class="note">Eight 24 Family LLC. Tell us roughly how many developers and what
@@ -421,6 +443,61 @@
       PolyForm Noncommercial 1.0.0.</p>
   </div>
 </footer>
+
+<script>
+// The numbers are not in this document. They are fetched the first time
+// somebody opens the block, so anything that reads the page without running
+// scripts — curl, feed readers, the crawlers that hoover up competitor
+// pricing — comes away with nothing. A determined scraper can still find the
+// endpoint in this file; this thins out the casual harvesting, it is not a
+// secret.
+(function () {
+  var d = document.getElementById('pricing');
+  if (!d) return;
+  var loaded = false;
+  d.addEventListener('toggle', function () {
+    if (!d.open || loaded) return;
+    loaded = true;
+    var body = document.getElementById('pricebody');
+    fetch('pricing.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (p) {
+        body.textContent = '';
+        var add = function (tag, cls, text, parent) {
+          var e = document.createElement(tag);
+          if (cls) e.className = cls;
+          if (text) e.textContent = text;
+          (parent || body).appendChild(e);
+          return e;
+        };
+        add('p', 'pclose', p.intro).style.margin = '14px 0 0';
+        var grid = add('div', 'ptiers');
+        p.tiers.forEach(function (t) {
+          var c = add('div', 'ptier', null, grid);
+          add('h4', null, t.name, c);
+          add('div', 'amt', t.price, c);
+          add('div', 'unit', t.unit, c);
+          add('div', 'terms', t.terms, c);
+          add('div', 'for', t.for, c);
+        });
+        var mk = function (items, cls) {
+          var ul = add('ul', 'plist ' + cls);
+          items.forEach(function (i) { add('li', null, i, ul); });
+        };
+        mk(p.included, 'yes');
+        mk(p.excluded, 'no');
+        add('p', 'pclose', p.closing);
+      })
+      .catch(function () {
+        body.textContent = '';
+        var e = document.createElement('p');
+        e.className = 'pload';
+        e.textContent = 'Could not load the numbers just now — email contact@eight24family.ai and we will send them.';
+        body.appendChild(e);
+      });
+  });
+})();
+</script>
 
 </body>
 </html>

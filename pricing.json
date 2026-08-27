@@ -1,0 +1,38 @@
+{
+  "intro": "A commercial licence covers use of Conch inside a company. It is a licence, not a subscription to a service — there is no backend of ours for you to depend on, and nothing stops working if you stop paying: the licence simply lapses.",
+  "tiers": [
+    {
+      "name": "Team",
+      "price": "$9",
+      "unit": "per developer / month",
+      "terms": "billed annually · minimum 3 seats",
+      "for": "A team that wants the licence squared away without a procurement cycle. Count the developers who actually open it."
+    },
+    {
+      "name": "Organisation",
+      "price": "$3,000",
+      "unit": "per year, flat",
+      "terms": "unlimited developers within one legal entity",
+      "for": "Cheaper than per-seat from roughly thirty developers, and it ends the seat-counting. One invoice, one renewal."
+    },
+    {
+      "name": "Redistribution",
+      "price": "from $15,000",
+      "unit": "per year",
+      "terms": "negotiated per case",
+      "for": "Shipping Conch to your own customers, embedding it in a product you sell, or putting it on a store under your own brand."
+    }
+  ],
+  "included": [
+    "A written commercial licence from Eight 24 Family LLC covering internal business use.",
+    "Security questionnaires and vendor-onboarding paperwork answered by a human.",
+    "Distribution however suits you — Google Play, or the signed APK for your own managed-device channel.",
+    "A named contact for issues, and a say in what gets built next. The app collects nothing, so what you tell us is the only signal there is."
+  ],
+  "excluded": [
+    "No uptime SLA. There is nothing hosted to have uptime — the app talks to your servers, and those are yours.",
+    "No 24/7 support desk. Conch is maintained by one developer; expect human-speed answers, not a rota.",
+    "No certifications. There is no SOC 2 or ISO 27001 report, and we will not imply otherwise. What there is instead: no backend to audit, no data received, and source you can read."
+  ],
+  "closing": "Prices are in USD and exclude any tax your jurisdiction adds. Non-profits, education and government keep using it free under the noncommercial licence — that is not a discount to ask for, it already applies."
+}
