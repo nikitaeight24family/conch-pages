@@ -20,10 +20,24 @@
   :root{
     --bg:#000; --panel:#0b0b0f; --line:#1c1c26;
     --accent:#a78bfa; --text:#f39c6b; --plain:#d8d5d0; --dim:#7b7b8a;
+    --scroll-thumb:#23222f; --scroll-thumb-hover:#3d3457;
     --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
+
+  /* Scrollbars. The OS default is a bright grey slab that cuts the page in
+     half wherever something scrolls sideways — the screenshot strip most of
+     all. Thin, dark, and it only picks up the accent when you are on it. */
+  *{scrollbar-width:thin;scrollbar-color:var(--scroll-thumb) transparent}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{
+    background:var(--scroll-thumb);border-radius:99px;
+    border:2px solid transparent;background-clip:padding-box}
+  ::-webkit-scrollbar-thumb:hover{
+    background:var(--scroll-thumb-hover);background-clip:padding-box}
+  ::-webkit-scrollbar-corner{background:transparent}
   body{margin:0;background:var(--bg);color:var(--plain);font-family:var(--mono);
        font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
   .wrap{max-width:960px;margin:0 auto;padding:0 22px}
