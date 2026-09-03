@@ -252,6 +252,13 @@
           that fits, so it runs shell commands and reads files with no per-model setup, only the brain
           local. Google&nbsp;Gemma, Qwen, Llama, gpt-oss and more, each wearing its own brand &mdash;
           tool-capable ones wear an <code>agent</code> badge, the rest are honest chat/vision models.</p></div>
+      <div class="card"><h3>Your phone is a machine too</h3>
+        <p>A real Linux runs <b>on the phone itself</b> and sits in the machine list like any
+          server &mdash; Conch starts it the moment you open it, because there is nothing for you
+          to connect to a device already in your hand. And an agent, local or on a server, can
+          drive the phone at <b>adb-shell level</b> through a small helper Conch installs over
+          your own SSH link: run commands, read logs, take a screenshot. Nothing leaves the
+          device except to your own server.</p></div>
       <div class="card"><h3>Ten agents, one app</h3>
         <p>Claude Code, Codex CLI, Gemini CLI, Grok, Copilot CLI, Qwen Code, Cursor CLI, opencode,
           Crush and Continue &mdash; each driven through its own real flags, so resume ids, approval
@@ -396,9 +403,12 @@
         including hardware-key SSH auth. Different shape, and both can be true at once.</p></details>
 
     <details><summary>Is it a terminal emulator?</summary>
-      <p>No. Termux owns that and does it well. Conch does not run code on the phone; it
-        gives an agent on a real machine a good mobile surface — and gives you the approvals,
-        files and diffs that a raw shell would make miserable to read on a 6-inch screen.</p></details>
+      <p>No. Termux owns that and does it well, and it is the better tool if what you want is a
+        shell to live in. Conch gives an agent a good mobile surface instead &mdash; the approvals,
+        files and diffs that a raw shell would make miserable to read on a 6-inch screen. It does
+        run a real Linux on the phone, for local models and for the phone's own row in your machine
+        list, but that is an environment it manages for the agent rather than a terminal for
+        you.</p></details>
 
     <details><summary>What data does Conch collect?</summary>
       <p>None. Not "anonymised", not "opt-out" — there is no analytics, no crash reporting
