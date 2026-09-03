@@ -375,14 +375,19 @@
           box</b> &mdash; the app gives each model the chat template it needs and routes it to the CLI
           that fits, so it runs shell commands and reads files with no per-model setup, only the brain
           local. Google&nbsp;Gemma, Qwen, Llama, gpt-oss and more, each wearing its own brand &mdash;
-          tool-capable ones wear an <code>agent</code> badge, the rest are honest chat/vision models.</p></div>
+          tool-capable ones wear an <code>agent</code> badge, the rest are honest chat/vision models.
+          The context window it runs them with follows your device rather than a fixed number, so a
+          4&nbsp;GB phone gets a real shelf instead of an empty one &mdash; and nothing is offered
+          that cannot start.</p></div>
       <div class="card"><h3>Your phone is a machine too</h3>
         <p>A real Linux runs <b>on the phone itself</b> and sits in the machine list like any
           server &mdash; Conch starts it the moment you open it, because there is nothing for you
           to connect to a device already in your hand. And an agent, local or on a server, can
           drive the phone at <b>adb-shell level</b> through a small helper Conch installs over
           your own SSH link: run commands, read logs, take a screenshot. Nothing leaves the
-          device except to your own server.</p></div>
+          device except to your own server. Once it is up it needs no network of any kind &mdash;
+          drop Wi-Fi, go to mobile data, go to no data at all: the machine keeps running until the
+          phone restarts.</p></div>
       <div class="card"><h3>Ten agents, one app</h3>
         <p>Claude Code, Codex CLI, Gemini CLI, Grok, Copilot CLI, Qwen Code, Cursor CLI, opencode,
           Crush and Continue &mdash; each driven through its own real flags, so resume ids, approval
@@ -582,7 +587,7 @@
       <a href="mailto:nikita@eight24family.ai">nikita@eight24family.ai</a> · Licensing,
       procurement and security review:
       <a href="mailto:contact@eight24family.ai">contact@eight24family.ai</a></p>
-    <p style="margin:0">Conch — <code>ai.eight24family.conch</code>. Published by
+    <p style="margin:0">Conch, published by
       <b style="color:var(--plain);font-weight:400">Eight 24 Family LLC</b> under
       PolyForm Noncommercial 1.0.0.</p>
   </div>
