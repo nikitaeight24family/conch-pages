@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#050507" />
+<meta name="color-scheme" content="dark" />
 <title>Conch — AI coding agents over SSH, from your phone</title>
 <meta name="description" content="Conch is a native Android client that drives Claude Code, OpenAI Codex and Gemini CLI on your own SSH servers. No hosted backend, no quotas, no proxy — your phone talks straight to your machine." />
 <link rel="icon" href="img/icon.png" />
@@ -17,17 +19,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <style>
-  :root{
-    --bg:#000; --panel:#0b0b0f; --line:#1c1c26;
-    --accent:#a78bfa; --text:#f39c6b; --plain:#d8d5d0; --dim:#7b7b8a;
+:root{
+    --bg:#050507; --panel:#0b0b10; --panel-2:#0e0e15; --line:#1b1b24; --line-hi:#2a2a3a;
+    --accent:#a78bfa; --accent-dim:#6d5bb8; --text:#f39c6b; --plain:#dedbd6; --dim:#7b7b8a;
+    --ok:#5ddc9a;
     --scroll-thumb:#23222f; --scroll-thumb-hover:#3d3457;
     --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --r:12px; --r-sm:9px;
+    --shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 18px 50px -28px rgba(0,0,0,.9);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
   /* Scrollbars. The OS default is a bright grey slab that cuts the page in
-     half wherever something scrolls sideways — the screenshot strip most of
+     half wherever something scrolls sideways - the screenshot strip most of
      all. Thin, dark, and it only picks up the accent when you are on it. */
   *{scrollbar-width:thin;scrollbar-color:var(--scroll-thumb) transparent}
   ::-webkit-scrollbar{width:10px;height:10px}
@@ -38,39 +44,112 @@
   ::-webkit-scrollbar-thumb:hover{
     background:var(--scroll-thumb-hover);background-clip:padding-box}
   ::-webkit-scrollbar-corner{background:transparent}
+
+  ::selection{background:rgba(167,139,250,.28);color:#fff}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
   body{margin:0;background:var(--bg);color:var(--plain);font-family:var(--mono);
-       font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:960px;margin:0 auto;padding:0 22px}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+       font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+       position:relative;overflow-x:hidden}
+
+  /* The room the terminal sits in: a faint character grid, scanlines, and one
+     soft glow behind the mark. All painted with gradients on two fixed layers,
+     so it costs no requests and never scrolls out of step with the content. */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(760px 420px at 50% -8%, rgba(167,139,250,.16), transparent 70%),
+      linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px) 0 0/100% 3px,
+      linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px) 0 0/28px 100%;
+    mask-image:linear-gradient(#000 0, #000 60%, transparent 100%);
+    -webkit-mask-image:linear-gradient(#000 0, #000 60%, transparent 100%)}
+  body>*{position:relative;z-index:1}
+
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent;
+    transition:color .15s ease,border-color .15s ease}
   a:hover{border-bottom-color:var(--accent)}
   h1,h2,h3{line-height:1.25;font-weight:700}
-  section{padding:64px 0;border-top:1px solid var(--line)}
+  code{color:var(--text)}
+
+  .skip{position:absolute;left:-9999px;top:0;background:var(--panel);border:1px solid var(--line);
+        padding:10px 16px;border-radius:var(--r-sm);z-index:60}
+  .skip:focus{left:16px;top:12px}
+
+  /* topbar - appears once the hero is behind you, so the page never loses its
+     own name or the way back to the store. */
+  .bar{position:fixed;top:0;left:0;right:0;z-index:50;
+       display:flex;align-items:center;gap:18px;
+       padding:11px 22px;border-bottom:1px solid transparent;
+       background:rgba(5,5,7,0);backdrop-filter:blur(0px);
+       transform:translateY(-100%);transition:transform .28s ease,background .28s ease,
+       border-color .28s ease,backdrop-filter .28s ease}
+  .bar.on{transform:none;background:rgba(5,5,7,.82);border-bottom-color:var(--line);
+          backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+  .bar .bmark{color:var(--accent);font-weight:700;letter-spacing:-.01em;border:0}
+  .bar .bmark::after{content:"_";color:var(--accent);opacity:.7}
+  .bar nav{display:flex;gap:16px;margin-left:auto;align-items:center;font-size:.8rem}
+  .bar nav a{color:var(--dim);border:0}
+  .bar nav a:hover{color:var(--plain)}
+  .bar .bget{color:#0a0a0c;background:var(--accent);border-radius:99px;padding:5px 14px;
+             font-weight:700;font-size:.78rem}
+  .bar .bget:hover{background:#c0aaff;color:#0a0a0c}
+  @media(max-width:720px){.bar nav .hide-s{display:none}}
+
+  section{padding:66px 0;border-top:1px solid var(--line)}
   section:first-of-type{border-top:0}
-  h2{font-size:1.35rem;color:var(--accent);margin:0 0 8px}
-  h2::before{content:"// ";color:var(--dim)}
-  .lede{color:var(--dim);margin:0 0 30px;max-width:64ch}
+  h2{font-size:1.3rem;color:var(--accent);margin:0 0 10px;display:flex;align-items:center;gap:14px}
+  h2::before{content:"//";color:var(--dim);font-weight:400}
+  h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .lede{color:var(--dim);margin:0 0 30px;max-width:66ch}
 
   /* hero */
-  header{padding:76px 0 60px;text-align:center}
-  .mark{font-size:clamp(2.6rem,9vw,4.2rem);font-weight:700;color:var(--accent);
-        margin:0;letter-spacing:-.02em}
+  header{padding:92px 0 62px;text-align:center}
+  .mark{font-size:clamp(2.7rem,9.4vw,4.4rem);font-weight:700;color:var(--accent);
+        margin:0;letter-spacing:-.03em;text-shadow:0 0 46px rgba(167,139,250,.35)}
   .caret{display:inline-block;width:.42em;height:.95em;background:var(--accent);
          vertical-align:-.08em;margin-left:.16em;animation:blink 1.15s step-end infinite}
   @keyframes blink{50%{opacity:0}}
-  .tag{font-size:clamp(1rem,3.4vw,1.3rem);color:var(--text);margin:16px auto 0;max-width:30ch}
-  .sub{color:var(--dim);margin:18px auto 0;max-width:60ch}
+  .tag{font-size:clamp(1rem,3.4vw,1.3rem);color:var(--text);margin:16px auto 0;max-width:32ch}
+  .sub{color:var(--dim);margin:18px auto 0;max-width:62ch}
+
+  /* the demo pane: the product's own surface, standing in for a screenshot */
+  .term{max-width:640px;margin:34px auto 0;text-align:left;background:var(--panel);
+        border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+        box-shadow:var(--shadow)}
+  .term .tbar{display:flex;align-items:center;gap:7px;padding:9px 14px;
+              border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .term .dot{width:9px;height:9px;border-radius:50%;background:#26263a}
+  .term .dot.a{background:#3b3054}
+  .term .tname{margin-left:8px;font-size:.72rem;color:var(--dim);letter-spacing:.04em}
+  .term .tbody{padding:16px 18px 18px;font-size:.84rem;line-height:1.85;min-height:112px}
+  .term .l{white-space:pre-wrap;word-break:break-word}
+  .term .p{color:var(--accent)}
+  .term .c{color:var(--plain)}
+  .term .o{color:var(--dim)}
+  .term .ok{color:var(--ok)}
+  .term .cur{display:inline-block;width:.55em;height:1.05em;background:var(--accent);
+             vertical-align:-.18em;animation:blink 1.15s step-end infinite}
+
   .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px;align-items:center}
   .play img{height:58px;display:block}
+  .play{border:0;border-radius:10px;transition:transform .15s ease,filter .15s ease}
+  .play:hover{transform:translateY(-2px);filter:brightness(1.06)}
   .ghost{border:1px solid var(--line);padding:0 20px;height:58px;display:flex;align-items:center;
-         border-radius:8px;color:var(--plain);font-size:.9rem}
-  .ghost:hover{border-color:var(--accent);color:var(--accent);border-bottom-color:var(--accent)}
+         border-radius:10px;color:var(--plain);font-size:.9rem;background:var(--panel);
+         transition:border-color .15s ease,color .15s ease,transform .15s ease}
+  .ghost:hover{border-color:var(--accent);color:var(--accent);border-bottom-color:var(--accent);
+               transform:translateY(-2px)}
   .meta{margin-top:26px;color:var(--dim);font-size:.8rem}
   .meta b{color:var(--text);font-weight:500}
 
   /* pipeline */
   .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:stretch;
         margin-top:8px}
-  .node{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+  .node{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;
+        position:relative;transition:border-color .18s ease,transform .18s ease}
+  .node::before{content:"";position:absolute;left:16px;right:16px;top:-1px;height:1px;
+        background:linear-gradient(90deg,transparent,var(--accent-dim),transparent);opacity:.55}
+  .node:hover{border-color:var(--line-hi);transform:translateY(-2px)}
   .node h3{margin:0 0 6px;font-size:.92rem;color:var(--text)}
   .node p{margin:0;font-size:.82rem;color:var(--dim);line-height:1.55}
   .arrow{align-self:center;color:var(--accent);font-size:1.1rem}
@@ -81,23 +160,34 @@
 
   /* shots */
   .shots{display:flex;gap:14px;overflow-x:auto;padding:6px 0 16px;scroll-snap-type:x mandatory}
-  .shot{flex:0 0 auto;width:222px;scroll-snap-align:start}
-  .shot img{width:100%;border:1px solid var(--line);border-radius:12px;display:block}
+  .shot{flex:0 0 auto;width:224px;scroll-snap-align:start;margin:0}
+  .shot img{width:100%;border:1px solid var(--line);border-radius:14px;display:block;
+            transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+  .shot:hover img{transform:translateY(-3px);border-color:var(--line-hi);
+                  box-shadow:0 20px 44px -26px rgba(167,139,250,.55)}
   .shot figcaption{color:var(--dim);font-size:.76rem;margin-top:9px;line-height:1.5}
 
-  /* grids */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
-  .card h3{margin:0 0 7px;font-size:.9rem;color:var(--text)}
+  /* grids - each card wears its index, the way a TUI numbers its panes */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(262px,1fr));gap:16px;
+        counter-reset:card}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+        padding:18px 20px;position:relative;overflow:hidden;
+        transition:border-color .18s ease,transform .18s ease,background .18s ease}
+  .card::after{counter-increment:card;content:counter(card,decimal-leading-zero);
+        position:absolute;top:12px;right:14px;font-size:.68rem;color:var(--line-hi);
+        letter-spacing:.08em;transition:color .18s ease}
+  .card:hover{border-color:var(--line-hi);transform:translateY(-2px);background:var(--panel-2)}
+  .card:hover::after{color:var(--accent-dim)}
+  .card h3{margin:0 0 7px;font-size:.9rem;color:var(--text);padding-right:30px}
   .card p{margin:0;font-size:.84rem;color:var(--dim);line-height:1.6}
 
   .nope{list-style:none;padding:0;margin:0;display:grid;gap:12px}
   .nope li{padding-left:30px;position:relative;font-size:.9rem;color:var(--plain)}
-  .nope li::before{content:"✕";position:absolute;left:6px;color:var(--accent)}
+  .nope li::before{content:"\2715";position:absolute;left:6px;color:var(--accent)}
   .nope span{color:var(--dim)}
 
   /* business */
-  #business{background:var(--panel);border-top:1px solid var(--line);scroll-margin-top:24px}
+  #business{background:var(--panel);border-top:1px solid var(--line);scroll-margin-top:64px}
   .entity{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);
           margin:0 0 14px}
   .entity b{color:var(--text);font-weight:500;letter-spacing:.06em}
@@ -107,32 +197,34 @@
   .licence p:last-child{margin-bottom:0;color:var(--dim);font-size:.86rem}
   .covers{list-style:none;padding:0;margin:0 0 32px;display:grid;gap:11px}
   .covers li{padding-left:28px;position:relative;font-size:.88rem;color:var(--dim)}
-  .covers li::before{content:"—";position:absolute;left:4px;color:var(--accent)}
+  .covers li::before{content:"\2014";position:absolute;left:4px;color:var(--accent)}
   .covers b{color:var(--plain);font-weight:500}
   .bizcta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
-          border:1px solid var(--line);border-radius:10px;padding:20px 22px;background:var(--bg)}
+          border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;background:var(--bg)}
   .bizcta .mail{font-size:1.02rem;color:var(--accent);font-weight:500}
   .bizcta .note{font-size:.8rem;color:var(--dim);flex:1;min-width:min(100%,260px)}
 
-  details{border:1px solid var(--line);border-radius:10px;background:var(--panel);
-          padding:15px 20px;margin-bottom:11px}
-  details[open]{border-color:#2a2a3a}
+  details{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+          padding:15px 20px;margin-bottom:11px;transition:border-color .18s ease}
+  details:hover{border-color:var(--line-hi)}
+  details[open]{border-color:var(--line-hi);background:var(--panel-2)}
   summary{cursor:pointer;font-size:.9rem;color:var(--text);list-style:none}
   summary::-webkit-details-marker{display:none}
-  summary::before{content:"▸ ";color:var(--accent)}
-  details[open] summary::before{content:"▾ "}
+  summary::before{content:"\25B8 ";color:var(--accent);display:inline-block;
+          transition:transform .18s ease}
+  details[open] summary::before{content:"\25BE "}
   details p{margin:12px 0 2px;font-size:.85rem;color:var(--dim);line-height:1.68}
   details p:last-child{margin-bottom:0}
 
-  pre{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  pre{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
       padding:16px 20px;overflow-x:auto;font-size:.82rem;color:var(--dim);margin:0}
   pre b{color:var(--text);font-weight:400}
 
-  /* pricing — fetched on first open, so it is not in the served HTML */
+  /* pricing - fetched on first open, so it is not in the served HTML */
   #pricing{margin:0 0 26px}
   .pload{color:var(--dim);font-size:.85rem;margin:12px 0 0}
   .ptiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0 22px}
-  .ptier{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .ptier{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
   .ptier h4{margin:0 0 12px;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
             color:var(--accent);font-weight:500}
   .ptier .amt{font-size:1.6rem;color:var(--text);line-height:1.1;font-weight:700}
@@ -142,22 +234,54 @@
   .plist{list-style:none;padding:0;margin:0 0 20px;display:grid;gap:9px}
   .plist li{padding-left:26px;position:relative;font-size:.85rem;color:var(--dim);line-height:1.6}
   .plist.yes li::before{content:"+";position:absolute;left:6px;color:var(--accent)}
-  .plist.no li::before{content:"✕";position:absolute;left:5px;color:var(--dim)}
+  .plist.no li::before{content:"\2715";position:absolute;left:5px;color:var(--dim)}
   .pclose{font-size:.8rem;color:var(--dim);margin:0}
 
   footer{border-top:1px solid var(--line);padding:34px 0 56px;color:var(--dim);font-size:.8rem}
   .flinks{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+
+  /* content arrives as you reach it - 10px and a fade, never a slide show */
+  .rv{opacity:0;transform:translateY(8px);
+      transition:opacity .34s ease,transform .34s ease}
+  .rv.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none}
+    .caret,.term .cur{animation:none}
+    .card:hover,.node:hover,.ghost:hover,.play:hover,.shot:hover img{transform:none}
+  }
 </style>
 </head>
 <body>
 
-<header>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar" id="bar">
+  <a class="bmark" href="#top">conch</a>
+  <nav>
+    <a class="hide-s" href="#how">how it works</a>
+    <a class="hide-s" href="#does">what it does</a>
+    <a href="#business">for companies</a>
+    <a class="bget" href="https://play.google.com/store/apps/details?id=ai.eight24family.conch">Get it</a>
+  </nav>
+</div>
+
+<header id="top">
   <div class="wrap">
     <h1 class="mark">conch<span class="caret"></span></h1>
     <p class="tag">Your phone, your server, your AI.</p>
     <p class="sub">A native Android client that drives <b>Claude Code</b>, <b>OpenAI Codex</b>
       and <b>Gemini CLI</b> on the servers you already own. Nothing is hosted by us — your
       phone talks straight to your machine over SSH.</p>
+    <div class="term" id="term" aria-hidden="true">
+      <div class="tbar"><span class="dot a"></span><span class="dot"></span><span class="dot"></span>
+        <span class="tname">conch &mdash; your-server</span></div>
+      <div class="tbody">
+        <div class="l"><span class="p">$</span> <span class="c" id="t1"></span></div>
+        <div class="l"><span class="p">~</span> <span class="c" id="t2"></span></div>
+        <div class="l o" id="t3"></div>
+      </div>
+    </div>
+
     <div class="cta">
       <a class="play" href="https://play.google.com/store/apps/details?id=ai.eight24family.conch">
         <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" />
@@ -171,8 +295,8 @@
   </div>
 </header>
 
-<section>
-  <div class="wrap">
+<section id="main">
+  <div class="wrap" id="how">
     <h2>how it works</h2>
     <p class="lede">There is no backend in the middle. Conch is a client for machines you
       already have, running agents you already pay for.</p>
@@ -241,7 +365,7 @@
 
 <section>
   <div class="wrap">
-    <h2>what it does</h2>
+    <h2 id="does">what it does</h2>
     <div class="grid">
       <div class="card"><h3>Local models &mdash; on the device</h3>
         <p>A built-in model store that <b>knows your device</b> &mdash; it reads your RAM, chip and GPU
@@ -465,6 +589,73 @@
 </footer>
 
 <script>
+// Three small behaviours, no library: the topbar that appears once the hero is
+// behind you, the prompt that types itself, and content that arrives as you
+// reach it. Each one checks prefers-reduced-motion and degrades to the finished
+// state rather than to nothing.
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var bar = document.getElementById('bar');
+  if (bar) {
+    var onScroll = function () {
+      if (window.scrollY > 220) bar.classList.add('on'); else bar.classList.remove('on');
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // The pane says what the product does in the product's own voice. Truthful:
+  // one ssh hop, one agent, nothing of ours in between.
+  var L1 = 'ssh you@your-server';
+  var L2 = 'claude';
+  var L3 = '\u25CF live \u2014 your machine, your account, no relay in between';
+  var t1 = document.getElementById('t1'), t2 = document.getElementById('t2'),
+      t3 = document.getElementById('t3');
+  if (t1 && t2 && t3) {
+    var cur = document.createElement('span');
+    cur.className = 'cur';
+    if (reduce) {
+      t1.textContent = L1; t2.textContent = L2;
+      t3.innerHTML = '<span class="ok">\u25CF</span> live \u2014 your machine, your account, no relay in between';
+    } else {
+      var type = function (el, text, done) {
+        var i = 0;
+        el.parentNode.appendChild(cur);
+        (function step() {
+          el.textContent = text.slice(0, i++);
+          if (i <= text.length) return setTimeout(step, 42);
+          setTimeout(done, 340);
+        })();
+      };
+      setTimeout(function () {
+        type(t1, L1, function () {
+          type(t2, L2, function () {
+            t3.innerHTML = '<span class="ok">\u25CF</span> live \u2014 your machine, your account, no relay in between';
+            t3.parentNode.appendChild(cur);
+          });
+        });
+      }, 420);
+    }
+  }
+
+  var targets = document.querySelectorAll('section .wrap > *, header .cta, header .meta, .term');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '260px 0px 260px 0px', threshold: 0 });
+    Array.prototype.forEach.call(targets, function (el, i) {
+      el.classList.add('rv');
+      el.style.transitionDelay = (Math.min(i % 5, 4) * 32) + 'ms';
+      io.observe(el);
+    });
+  }
+})();
+
 // The numbers are not in this document. They are fetched the first time
 // somebody opens the block, so anything that reads the page without running
 // scripts — curl, feed readers, the crawlers that hoover up competitor
